@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_alignParentTop="true"
+              android:layout_marginTop="36dp"
+              android:background="@android:color/white"
+              android:padding="@dimen/widget_margin"
+              android:orientation="vertical">
+    <TextView
+        android:id="@+id/recipe_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|top"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/appwidget_text"
+        android:text="@string/appwidget_text"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"/>
+
+    <include layout="@layout/ingredient_header_layout" />
+    <include layout="@layout/ingredient_row_comment_layout"
+             android:id="@+id/row_1"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_2"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_3"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_4"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_5"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_6"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_7"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_8"/>
+    <include layout="@layout/ingredient_row_layout"
+             android:id="@+id/row_9"/>
+    <include layout="@layout/ingredient_row_comment_layout"
+             android:id="@+id/row_10"/>
+</LinearLayout>
