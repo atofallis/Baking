@@ -57,6 +57,14 @@ public class DataManager {
         );
     }
 
+    public void addRecipeListener(RecipeListener listener) {
+        mRecipeListenerList.add(listener);
+    }
+
+    public void removeRecipeListener(RecipeListener listener) {
+        mRecipeListenerList.remove(listener);
+    }
+
     private void notifyRecipeListeners(List<Recipe> results) {
         mRecipeResults = results;
         for (RecipeListener listener : mRecipeListenerList) {

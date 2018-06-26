@@ -19,8 +19,5 @@ public class RecipeDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
-        // TODO - call as part of Data manager network/DB sync
-        mDataManager.fetchRecipes();
     }
 }
