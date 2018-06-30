@@ -5,6 +5,11 @@ import android.app.Application;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tofallis.baking.BuildConfig;
+import com.tofallis.baking.data.AppDatabase;
+import com.tofallis.baking.data.IngredientDao;
+import com.tofallis.baking.data.RecipeDao;
+import com.tofallis.baking.data.RecipeRepo;
+import com.tofallis.baking.data.StepDao;
 import com.tofallis.baking.network.DataManager;
 
 import javax.inject.Singleton;
@@ -67,7 +72,31 @@ class RecipeModule {
 
     @Provides
     @Singleton
-    DataManager provideDataManager(Retrofit basicRetrofit) {
-        return new DataManager(basicRetrofit);
+    DataManager provideDataManager(Retrofit basicRetrofit, RecipeRepo repo) {
+        return new DataManager(basicRetrofit, repo);
+    }
+
+    @Provides
+    @Singleton
+    AppDatabase provideAppDatabase(Application app) {
+        return AppDatabase.getDatabase(app);
+    }
+
+    @Provides
+    @Singleton
+    RecipeDao provideRecipeDao(AppDatabase db) {
+        return db.recipeDao();
+    }
+
+    @Provides
+    @Singleton
+    IngredientDao provideIngredientDao(AppDatabase db) {
+        return db.ingredientDao();
+    }
+
+    @Provides
+    @Singleton
+    StepDao provideStepDao(AppDatabase db) {
+        return db.stepDao();
     }
 }

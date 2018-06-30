@@ -1,5 +1,6 @@
 package com.tofallis.baking.ui.recipe_list;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +11,10 @@ import android.util.Log;
 
 import com.tofallis.baking.R;
 import com.tofallis.baking.api.listener.RecipeListener;
+import com.tofallis.baking.data.RecipeStore;
 import com.tofallis.baking.network.DataManager;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -29,16 +33,16 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
     RecyclerView mRecipes;
 
     private RecipeAdapter mAdapter;
+    private RecipeViewModel mRecipeViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        // TODO - call as part of Data manager network/DB sync
         mDataManager.addRecipeListener(this);
-        mDataManager.fetchRecipes();
-
+        mRecipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        mRecipeViewModel.getRecipeLiveData().observe(this, this::onNewRecipeData);
         setContentView(R.layout.recipe_list_layout);
 
         ButterKnife.bind(this);
@@ -47,7 +51,12 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
         mRecipes.setAdapter(mAdapter);
 
         setRecyclerViewLayoutManager(getResources().getConfiguration());
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRecipeViewModel.fetchFromNetworkIfNeeded(mDataManager);
     }
 
     @Override
@@ -66,14 +75,19 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
         }
     }
 
-    @Override
-    public void onSuccess() {
-        mAdapter.setRecipes(mDataManager.getRecipeResults());
+    private void onNewRecipeData(List<RecipeStore> recipes) {
+        mAdapter.setRecipes(recipes);
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onNetworkError(Throwable error) {
+    public void onNetworkSuccess() {
+        mRecipeViewModel.recipeRequestSuccess();
+    }
 
+    @Override
+    public void onNetworkError(Throwable error) {
+        Log.d(TAG, "Network Error: " + error.getMessage());
+        mRecipeViewModel.recipeRequestError();
     }
 }

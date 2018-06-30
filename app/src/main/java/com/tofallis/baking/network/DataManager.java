@@ -1,7 +1,9 @@
 package com.tofallis.baking.network;
 
+import android.util.Log;
+
 import com.tofallis.baking.api.listener.RecipeListener;
-import com.tofallis.baking.data.Recipe;
+import com.tofallis.baking.data.RecipeRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +18,10 @@ import retrofit2.Retrofit;
 
 public class DataManager {
 
+    private static final String TAG = DataManager.class.getSimpleName();
+
     private List<RecipeListener> mRecipeListenerList = new ArrayList<>();
-    private List<Recipe> mRecipeResults = new ArrayList<>();
-
     private CompositeDisposable mDisposable = new CompositeDisposable();
-
-    public List<Recipe> getRecipeResults() {
-        return mRecipeResults;
-    }
 
     private Scheduler getSubscribeOnScheduler() {
         return Schedulers.io();
@@ -36,12 +34,16 @@ public class DataManager {
     @Inject
     Retrofit mRetrofit;
 
-    DataManager() {
+    @Inject
+    RecipeRepo mRecipeRepo;
+
+    private DataManager() {
         throw new InstantiationError("cannot use default ctor");
     }
 
-    public DataManager(Retrofit retrofit) {
+    public DataManager(Retrofit retrofit, RecipeRepo repo) {
         mRetrofit = retrofit;
+        mRecipeRepo = repo;
     }
 
     public void fetchRecipes() {
@@ -51,7 +53,7 @@ public class DataManager {
                 .subscribeOn(getSubscribeOnScheduler())
                 .observeOn(getObserveOnScheduler())
                 .subscribe(
-                        this::notifyRecipeListeners,
+                        this::handleRecipesSuccess,
                         this::handleRecipesError
                 )
         );
@@ -63,12 +65,14 @@ public class DataManager {
 
     public void removeRecipeListener(RecipeListener listener) {
         mRecipeListenerList.remove(listener);
+        mDisposable.dispose();
     }
 
-    private void notifyRecipeListeners(List<Recipe> results) {
-        mRecipeResults = results;
+    private void handleRecipesSuccess(List<Recipe> results) {
+        Log.d(TAG, "Recipe results successfully retrieved from network, updating DB..");
+        mRecipeRepo.updateRecipes(results);
         for (RecipeListener listener : mRecipeListenerList) {
-            listener.onSuccess();
+            listener.onNetworkSuccess();
         }
     }
 

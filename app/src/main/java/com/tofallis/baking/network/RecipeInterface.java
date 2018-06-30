@@ -1,7 +1,5 @@
 package com.tofallis.baking.network;
 
-import com.tofallis.baking.data.Recipe;
-
 import java.util.List;
 
 import io.reactivex.Observable;

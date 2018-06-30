@@ -1,6 +1,6 @@
 package com.tofallis.baking.api.listener;
 
 public interface RecipeListener {
-    void onSuccess();
+    void onNetworkSuccess();
     void onNetworkError(Throwable error);
 }

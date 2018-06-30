@@ -1,15 +1,13 @@
-package com.tofallis.baking.data;
+package com.tofallis.baking.network;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 public class Ingredient {
     @SerializedName("quantity") private String quantity;
 
     @SerializedName("measure") private String measure;
 
-    @SerializedName("ingredients") private List<Ingredient> ingredients;
+    @SerializedName("ingredient") private String ingredient;
 
     public String getQuantity() {
         return quantity;
@@ -19,7 +17,7 @@ public class Ingredient {
         return measure;
     }
 
-    public List<Ingredient> getIngredients() {
-        return ingredients;
+    public String getIngredient() {
+        return ingredient;
     }
 }

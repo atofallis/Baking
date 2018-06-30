@@ -13,26 +13,24 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.tofallis.baking.R;
-import com.tofallis.baking.data.Recipe;
+import com.tofallis.baking.data.RecipeStore;
 import com.tofallis.baking.ui.RecipeDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.util.TypedValue.COMPLEX_UNIT_DIP;
-
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
     private static final String TAG = RecipeAdapter.class.getSimpleName();
     private Context mContext;
-    // store list of Movies from the api query.
-    private List<Recipe> mRecipes = new ArrayList<>();
+    // store list of Recipes from the api query.
+    private List<RecipeStore> mRecipes = new ArrayList<>();
 
-    public List<Recipe> getRecipes() {
+    public List<RecipeStore> getRecipes() {
         return mRecipes;
     }
 
-    public void setRecipes(List<Recipe> recipes) {
+    public void setRecipes(List<RecipeStore> recipes) {
         mRecipes = recipes;
         Log.i(TAG, "Recipes:: " + mRecipes.toString());
     }
@@ -58,12 +56,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(RecipeAdapter.ViewHolder holder, final int position) {
 
-        final Recipe r = mRecipes.get(position);
+        final RecipeStore r = mRecipes.get(position);
         final String recipeName = r.getName();
         holder.mRecipeTitle.setText(recipeName);
-//        if(recipeName.length() >= 10) {
-//            holder.mRecipeTitle.setTextSize(COMPLEX_UNIT_DIP, 60);
-//        }
         holder.mNumServings.setText(mContext.getString(R.string.servings, r.getServings()));
 
         if (holder.mBackgroundImage == null) {
@@ -94,7 +89,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
      * Creates a new ImageView for each item referenced by the adapter
      */
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         ImageView mBackgroundImage;
         TextView mRecipeTitle;
@@ -112,11 +107,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         public void onClick(View view) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                Recipe r = getRecipes().get(position);
+                RecipeStore r = getRecipes().get(position);
                 Intent intent = new Intent(mContext, RecipeDetailActivity.class);
                 // TODO... intent.putExtra(Recipe.ID, r.getId());
                 mContext.startActivity(intent);
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            // TODO - Add Widget
+            return false;
         }
     }
 }

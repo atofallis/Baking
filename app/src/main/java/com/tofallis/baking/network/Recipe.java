@@ -1,4 +1,4 @@
-package com.tofallis.baking.data;
+package com.tofallis.baking.network;
 
 import com.google.gson.annotations.SerializedName;
 
