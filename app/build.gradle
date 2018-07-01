@@ -50,6 +50,8 @@ dependencies {
     androidTestUtil 'com.android.support.test:orchestrator:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'com.android.support.test:runner:1.0.2'
+    testImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     // network APIs
     implementation 'com.google.code.gson:gson:2.8.2'
@@ -78,5 +80,4 @@ dependencies {
     // lifecycle + livedata
     implementation 'android.arch.lifecycle:extensions:' + archComponentsVersion
     annotationProcessor 'android.arch.lifecycle:compiler:' + archComponentsVersion
-
 }

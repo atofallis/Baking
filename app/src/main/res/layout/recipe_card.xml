@@ -25,7 +25,6 @@
             android:id="@+id/recipe_title_text"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:text="@string/appwidget_text"
             android:textColor="@android:color/black"
             android:textSize="48sp"/>
 
@@ -35,7 +34,6 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:padding="10dp"
-            android:text="@string/appwidget_text"
             android:textColor="@android:color/black"
             android:textSize="24sp"/>
     </RelativeLayout>

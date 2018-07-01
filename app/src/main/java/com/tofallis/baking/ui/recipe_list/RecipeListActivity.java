@@ -54,12 +54,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mRecipeViewModel.fetchFromNetworkIfNeeded(mDataManager);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         mDataManager.removeRecipeListener(this);
@@ -76,6 +70,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
     }
 
     private void onNewRecipeData(List<RecipeStore> recipes) {
+        mRecipeViewModel.fetchFromNetworkIfNeeded(mDataManager);
         mAdapter.setRecipes(recipes);
         mAdapter.notifyDataSetChanged();
     }

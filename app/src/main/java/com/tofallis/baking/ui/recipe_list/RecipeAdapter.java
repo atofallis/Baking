@@ -116,8 +116,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         @Override
         public boolean onLongClick(View v) {
-            // TODO - Add Widget
-            return false;
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                RecipeStore r = getRecipes().get(position);
+                Intent intent = new Intent(mContext, RecipeDetailActivity.class);
+                // TODO... intent.putExtra(Recipe.ID, r.getId());
+                mContext.startActivity(intent);
+            }
+            return true;
         }
     }
 }

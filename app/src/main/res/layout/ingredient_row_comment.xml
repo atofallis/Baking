@@ -3,7 +3,6 @@
         android:id="@+id/ingredient_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/appwidget_text_error_no_ingredients"
+        android:gravity="center_horizontal|top"
         android:visibility="gone"/>
 </merge>
