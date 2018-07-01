@@ -10,9 +10,10 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.tofallis.baking.R;
-import com.tofallis.baking.network.Ingredient;
-import com.tofallis.baking.network.Recipe;
+import com.tofallis.baking.data.IngredientStore;
 import com.tofallis.baking.ui.recipe_list.RecipeListActivity;
+
+import java.util.List;
 
 /**
  * Implementation of App Widget functionality.
@@ -22,10 +23,21 @@ public class RecipeIngredientsWidget extends AppWidgetProvider {
     private static final int MAX_INGREDIENTS_TO_DISPLAY = 10;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId, Recipe recipe) {
+                                int appWidgetId, String recipeName, List<IngredientStore> ingredients) {
+        RemoteViews views = setupIngredientsList(context, recipeName, ingredients);
+
+        Intent i = new Intent(context, RecipeListActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(context, 0, i, 0);
+        views.setOnClickPendingIntent(R.id.widget_layout, pi);
+
+        // Instruct the widget manager to update the widget
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    public static RemoteViews setupIngredientsList(Context context, String recipeName, List<IngredientStore> ingredients) {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_ingredients_widget);
-        views.setTextViewText(R.id.recipe_title, recipe.getName());
+        views.setTextViewText(R.id.recipe_title, recipeName);
 
         views.removeAllViews(R.id.row_1);
         views.removeAllViews(R.id.row_2);
@@ -39,7 +51,7 @@ public class RecipeIngredientsWidget extends AppWidgetProvider {
         views.removeAllViews(R.id.last_row);
 
         RemoteViews firstRow = new RemoteViews(context.getPackageName(), R.layout.ingredient_row_comment_layout);
-        if (recipe.getIngredients() == null || recipe.getIngredients().size() == 0) {
+        if (ingredients == null || ingredients.size() == 0) {
             firstRow.setTextViewText(R.id.ingredient_comment, context.getString(R.string.appwidget_text_error_no_ingredients));
             firstRow.setViewVisibility(R.id.ingredient_comment, View.VISIBLE);
             firstRow.setViewVisibility(R.id.ingredient, View.GONE);
@@ -47,16 +59,16 @@ public class RecipeIngredientsWidget extends AppWidgetProvider {
             views.addView(R.id.row_1, firstRow);
         } else {
             RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.ingredient_row_layout);
-            for (int i=0; i < recipe.getIngredients().size() && i < MAX_INGREDIENTS_TO_DISPLAY; i++) {
-                final Ingredient ingredient = recipe.getIngredients().get(i);
+            for (int i=0; i < ingredients.size() && i < MAX_INGREDIENTS_TO_DISPLAY; i++) {
+                final IngredientStore ingredient = ingredients.get(i);
                 row.setTextViewText(R.id.ingredient, ingredient.getIngredient());
                 row.setTextViewText(R.id.quantity, context.getString(
-                                R.string.appwidget_quantity_text,
-                                ingredient.getQuantity(),
-                                ingredient.getMeasure()));
+                        R.string.appwidget_quantity_text,
+                        ingredient.getQuantity(),
+                        ingredient.getMeasure()));
                 views.addView(getIngredientRowResourceIdFromIndex(i), row);
             }
-            if (recipe.getIngredients().size() >= MAX_INGREDIENTS_TO_DISPLAY) {
+            if (ingredients.size() >= MAX_INGREDIENTS_TO_DISPLAY) {
                 RemoteViews lastRow = new RemoteViews(context.getPackageName(), R.layout.ingredient_row_comment_layout);
                 lastRow.setTextViewText(R.id.ingredient_comment, context.getString(R.string.appwidget_text_see_more));
                 lastRow.setViewVisibility(R.id.ingredient_comment, View.VISIBLE);
@@ -66,12 +78,7 @@ public class RecipeIngredientsWidget extends AppWidgetProvider {
             }
         }
 
-        Intent i = new Intent(context, RecipeListActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(context, 0, i, 0);
-        views.setOnClickPendingIntent(R.id.widget_layout, pi);
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        return views;
     }
 
     @Override
@@ -79,7 +86,7 @@ public class RecipeIngredientsWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             // TODO - set recipe correctly!
-            updateAppWidget(context, appWidgetManager, appWidgetId, new Recipe());
+            updateAppWidget(context, appWidgetManager, appWidgetId, null, null);
         }
     }
 

@@ -3,6 +3,7 @@ package com.tofallis.baking.ui.recipe_list;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +15,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tofallis.baking.R;
 import com.tofallis.baking.data.RecipeStore;
-import com.tofallis.baking.ui.RecipeDetailActivity;
+import com.tofallis.baking.ui.RecipeConstants;
+import com.tofallis.baking.ui.recipe_detail.RecipeDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     // store list of Recipes from the api query.
     private List<RecipeStore> mRecipes = new ArrayList<>();
 
-    public List<RecipeStore> getRecipes() {
+    private List<RecipeStore> getRecipes() {
         return mRecipes;
     }
 
@@ -35,12 +37,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Log.i(TAG, "Recipes:: " + mRecipes.toString());
     }
 
-    public RecipeAdapter(Context context) {
+    RecipeAdapter(Context context) {
         mContext = context;
     }
 
+    @NonNull
     @Override
-    public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecipeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -49,12 +52,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         View recipeView = inflater.inflate(R.layout.recipe_card, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(recipeView);
-        return viewHolder;
+        return new ViewHolder(recipeView);
     }
 
     @Override
-    public void onBindViewHolder(RecipeAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull RecipeAdapter.ViewHolder holder, final int position) {
 
         final RecipeStore r = mRecipes.get(position);
         final String recipeName = r.getName();
@@ -109,7 +111,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             if (position != RecyclerView.NO_POSITION) {
                 RecipeStore r = getRecipes().get(position);
                 Intent intent = new Intent(mContext, RecipeDetailActivity.class);
-                // TODO... intent.putExtra(Recipe.ID, r.getId());
+                intent.putExtra(RecipeConstants.EXTRA_RECIPE_ID, r.getId());
                 mContext.startActivity(intent);
             }
         }

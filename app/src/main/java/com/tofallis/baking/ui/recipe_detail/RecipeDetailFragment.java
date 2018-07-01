@@ -1,4 +1,4 @@
-package com.tofallis.baking.ui;
+package com.tofallis.baking.ui.recipe_detail;
 
 import android.support.v7.app.AppCompatActivity;
 

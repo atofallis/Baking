@@ -1,4 +1,4 @@
-package com.tofallis.baking.api.listener;
+package com.tofallis.baking.network;
 
 public interface RecipeListener {
     void onNetworkSuccess();

@@ -2,7 +2,6 @@ package com.tofallis.baking.network;
 
 import android.util.Log;
 
-import com.tofallis.baking.api.listener.RecipeListener;
 import com.tofallis.baking.data.RecipeRepo;
 
 import java.util.ArrayList;

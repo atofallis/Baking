@@ -7,12 +7,14 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.TypeConverters;
 
+import java.util.List;
+
 @TypeConverters({DateConverter.class})
 @Dao
 public interface StepDao {
 
     @Query("SELECT * FROM step WHERE recipeId = :recipeId")
-    LiveData<StepStore> getSteps(int recipeId);
+    LiveData<List<StepStore>> getSteps(int recipeId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void updateSteps(StepStore... step);

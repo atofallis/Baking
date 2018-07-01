@@ -1,6 +1,6 @@
 package com.tofallis.baking.di;
 
-import com.tofallis.baking.ui.RecipeDetailActivity;
+import com.tofallis.baking.ui.recipe_detail.RecipeDetailActivity;
 import com.tofallis.baking.ui.recipe_list.RecipeListActivity;
 
 import dagger.Module;
