@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_ID;
+import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_NAME;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
@@ -47,16 +48,23 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_RECIPE_ID)) {
-                // populate the UI
+            // populate the UI
             RecipeViewModelFactory factory = new RecipeViewModelFactory(AppDatabase.getDatabase(getApplicationContext()), intent.getIntExtra(EXTRA_RECIPE_ID, -1));
-                final RecipeIdViewModel steps = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
-                steps.getStepLiveData().observe(this, stepStoreList -> {
-                    mRecipeDetailAdapter.setSteps(stepStoreList);
-                    mRecipeDetailAdapter.notifyDataSetChanged();
-                });
+            final RecipeIdViewModel steps = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
+            steps.getStepLiveData().observe(this, stepStoreList -> {
+                mRecipeDetailAdapter.setSteps(stepStoreList);
+                mRecipeDetailAdapter.notifyDataSetChanged();
+            });
             final RecipeIdViewModel ingredients = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
             ingredients.getIngredientLiveData().observe(this, ingredientStoreList -> {
                 Log.d(TAG, "Ingredients list size: " + ingredientStoreList.size());
+                IngredientsFragment fragment = IngredientsFragment.newInstance(
+                        ingredientStoreList,
+                        intent.getStringExtra(EXTRA_RECIPE_NAME));
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.recipe_ingredients_list, fragment)
+                        .commit();
 //                mRecipeIngredients = RecipeIngredientsWidget.setupIngredientsList(this, null, ingredientStoreList);
             });
         }

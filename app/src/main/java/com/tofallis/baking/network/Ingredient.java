@@ -3,13 +3,13 @@ package com.tofallis.baking.network;
 import com.google.gson.annotations.SerializedName;
 
 public class Ingredient {
-    @SerializedName("quantity") private String quantity;
+    @SerializedName("quantity") private double quantity;
 
     @SerializedName("measure") private String measure;
 
     @SerializedName("ingredient") private String ingredient;
 
-    public String getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 

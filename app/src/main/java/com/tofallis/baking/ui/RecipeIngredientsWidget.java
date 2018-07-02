@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class RecipeIngredientsWidget extends AppWidgetProvider {
 
-    private static final int MAX_INGREDIENTS_TO_DISPLAY = 10;
+    public static final int MAX_INGREDIENTS_TO_DISPLAY = 9;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId, String recipeName, List<IngredientStore> ingredients) {
@@ -100,7 +100,7 @@ public class RecipeIngredientsWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    private static @IdRes int getIngredientRowResourceIdFromIndex(int index) {
+    public static @IdRes int getIngredientRowResourceIdFromIndex(int index) {
         switch (index) {
             case 0:
                 return R.id.row_1;

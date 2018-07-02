@@ -77,7 +77,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             Picasso.with(mContext)
                     .load(url)
                     .placeholder(placeholder) // TODO - better placeholders
-                    .error(R.drawable.ic_launcher_foreground)
+                    .error(R.drawable.example_appwidget_preview)
                     .into(holder.mBackgroundImage);
         }
     }
@@ -112,6 +112,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 RecipeStore r = getRecipes().get(position);
                 Intent intent = new Intent(mContext, RecipeDetailActivity.class);
                 intent.putExtra(RecipeConstants.EXTRA_RECIPE_ID, r.getId());
+                intent.putExtra(RecipeConstants.EXTRA_RECIPE_NAME, r.getName());
                 mContext.startActivity(intent);
             }
         }
