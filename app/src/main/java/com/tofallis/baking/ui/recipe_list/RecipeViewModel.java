@@ -75,7 +75,7 @@ public class RecipeViewModel extends AndroidViewModel {
         if (mRecipeLiveData.getValue().size() == 0) {
             RecipeStore placeholder = new RecipeStore(0, "No Recipes!", 0, "http://www.magicalsurprise.com/themes/custom/2975/assets/Surprise.jpeg", OffsetDateTime.now());
             IngredientStore placeholderIngredient = new IngredientStore(1, 1.5, "Tonnes", "Stardust", 0);
-            StepStore placeholderStep = new StepStore(1, 1, "TODO", "Really TODO", "", 0);
+            StepStore placeholderStep = new StepStore(1, 1, "TODO", "Really TODO", "", "", 0);
             DiskIOExecutor.execute(() -> {
                 // TODO - single transaction?
                 mDb.recipeDao().updateRecipe(placeholder);

@@ -1,9 +1,9 @@
 package com.tofallis.baking.ui.recipe_detail;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tofallis.baking.R;
 import com.tofallis.baking.data.StepStore;
-import com.tofallis.baking.ui.RecipeConstants;
+import com.tofallis.baking.ui.recipe_step.RecipeStepActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,24 +66,21 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
      * Creates a new ImageView for each item referenced by the adapter
      */
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView mStepShortDescription;
 
         ViewHolder(View itemView) {
             super(itemView);
             mStepShortDescription = itemView.findViewById(R.id.recipe_step_short_description);
-        }
 
-        @Override
-        public void onClick(View view) {
-            int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                int recipeId = getSteps().get(position).getRecipeId();
-                Intent intent = new Intent(mContext, RecipeDetailActivity.class);
-                intent.putExtra(RecipeConstants.EXTRA_RECIPE_ID, recipeId);
-                mContext.startActivity(intent);
-            }
+            mStepShortDescription.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                Log.d(TAG, "Pos: " + position);
+                if (position != RecyclerView.NO_POSITION) {
+                    RecipeStepActivity.startStepActivity(mContext, position, getSteps().get(position).getRecipeId());
+                }
+            });
         }
     }
 }

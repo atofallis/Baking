@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -12,7 +14,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 parentColumns = "id",
                 childColumns = "recipeId",
                 onDelete = CASCADE)})
-public class StepStore {
+public class StepStore implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     public int uid;
@@ -34,14 +36,37 @@ public class StepStore {
         // allow lazy init but explicitly @Ignore for Room
     }
 
-    public StepStore(int uid, int id, String shortDescription, String description, String videoUrl, int recipeId) {
+    public StepStore(int uid, int id, String shortDescription, String description, String videoUrl, String thumbnailUrl, int recipeId) {
         this.uid = uid;
         this.id = id;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoUrl = videoUrl;
+        this.thumbnailUrl = thumbnailUrl;
         this.recipeId = recipeId;
     }
+
+    protected StepStore(Parcel in) {
+        uid = in.readInt();
+        id = in.readInt();
+        shortDescription = in.readString();
+        description = in.readString();
+        videoUrl = in.readString();
+        thumbnailUrl = in.readString();
+        recipeId = in.readInt();
+    }
+
+    public static final Creator<StepStore> CREATOR = new Creator<StepStore>() {
+        @Override
+        public StepStore createFromParcel(Parcel in) {
+            return new StepStore(in);
+        }
+
+        @Override
+        public StepStore[] newArray(int size) {
+            return new StepStore[size];
+        }
+    };
 
     public int getUid() {
         return uid;
@@ -71,10 +96,6 @@ public class StepStore {
         return recipeId;
     }
 
-//    public void setUid(int uid) {
-//        this.uid = uid;
-//    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -97,5 +118,21 @@ public class StepStore {
 
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(uid);
+        dest.writeInt(id);
+        dest.writeString(shortDescription);
+        dest.writeString(description);
+        dest.writeString(videoUrl);
+        dest.writeString(thumbnailUrl);
+        dest.writeInt(recipeId);
     }
 }

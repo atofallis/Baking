@@ -46,6 +46,8 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:' + supportLibVersion
     implementation 'com.android.support:cardview-v7:' + supportLibVersion
     implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

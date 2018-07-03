@@ -10,9 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.tofallis.baking.R;
-import com.tofallis.baking.network.RecipeListener;
 import com.tofallis.baking.data.RecipeStore;
 import com.tofallis.baking.network.DataManager;
+import com.tofallis.baking.network.RecipeListener;
 
 import java.util.List;
 

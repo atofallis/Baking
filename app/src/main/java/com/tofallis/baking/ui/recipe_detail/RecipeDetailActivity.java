@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.tofallis.baking.R;
 import com.tofallis.baking.data.AppDatabase;
@@ -28,8 +27,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
     @BindView(R.id.rvSteps)
     RecyclerView mSteps;
 
-//     RemoteViews mRecipeIngredients;
-
     RecipeDetailAdapter mRecipeDetailAdapter;
 
     @Override
@@ -39,8 +36,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.recipe_detail_step_list_layout);
         ButterKnife.bind(this);
-
-//        mRecipeIngredients = findViewById(R.id.recipe_ingredients_list);
 
         mRecipeDetailAdapter = new RecipeDetailAdapter(this);
         mSteps.setAdapter(mRecipeDetailAdapter);
@@ -57,7 +52,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
             });
             final RecipeIdViewModel ingredients = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
             ingredients.getIngredientLiveData().observe(this, ingredientStoreList -> {
-                Log.d(TAG, "Ingredients list size: " + ingredientStoreList.size());
                 IngredientsFragment fragment = IngredientsFragment.newInstance(
                         ingredientStoreList,
                         intent.getStringExtra(EXTRA_RECIPE_NAME));
@@ -65,7 +59,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.recipe_ingredients_list, fragment)
                         .commit();
-//                mRecipeIngredients = RecipeIngredientsWidget.setupIngredientsList(this, null, ingredientStoreList);
             });
         }
     }
