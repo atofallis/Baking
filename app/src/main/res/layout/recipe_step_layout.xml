@@ -1,51 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <VideoView
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/videoView"
-        android:layout_width="0dp"
-        android:layout_height="260dp"
-        android:layout_marginBottom="47dp"
-        android:layout_marginEnd="21dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="29dp"
-        app:layout_constraintBottom_toTopOf="@+id/stepDescription"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="260dp"/>
 
     <TextView
         android:id="@+id/stepDescription"
         android:layout_width="356dp"
         android:layout_height="105dp"
-        android:layout_marginBottom="8dp"
-        tools:text="@string/step_description_placeholder"
-        app:layout_constraintBottom_toTopOf="@+id/prevNextButtons"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/videoView"
+        android:layout_gravity="center_horizontal"
         />
 
     <LinearLayout
         android:id="@+id/prevNextButtons"
-        android:layout_width="0dp"
-        android:layout_height="58dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stepDescription">
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
         <Button
             android:id="@+id/prevButton"
             android:layout_width="wrap_content"
@@ -60,4 +37,4 @@
             android:layout_weight="1"
             android:text="@string/button_next_step"/>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

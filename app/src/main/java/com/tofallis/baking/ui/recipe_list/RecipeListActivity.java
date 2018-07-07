@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tofallis.baking.R;
 import com.tofallis.baking.data.RecipeStore;
@@ -54,6 +55,12 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mRecipeViewModel.retryFromNetworkIfNeeded(mDataManager);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mDataManager.removeRecipeListener(this);
@@ -83,6 +90,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
     @Override
     public void onNetworkError(Throwable error) {
         Log.d(TAG, "Network Error: " + error.getMessage());
-        mRecipeViewModel.recipeRequestError();
+        if (mRecipeViewModel.checkCachedDataOnNetworkError()) {
+            Toast.makeText(this, R.string.toast_no_recipes, Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -6,11 +6,8 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tofallis.baking.DiskIOExecutor;
 import com.tofallis.baking.data.AppDatabase;
-import com.tofallis.baking.data.IngredientStore;
 import com.tofallis.baking.data.RecipeStore;
-import com.tofallis.baking.data.StepStore;
 import com.tofallis.baking.network.DataManager;
 
 import org.threeten.bp.OffsetDateTime;
@@ -22,6 +19,7 @@ public class RecipeViewModel extends AndroidViewModel {
     private static final String TAG = RecipeViewModel.class.getSimpleName();
     private LiveData<List<RecipeStore>> mRecipeLiveData;
     private OffsetDateTime mLastInMemorySync;
+    private boolean mNetworkError = false;
     private final AppDatabase mDb;
 
     public RecipeViewModel(@NonNull Application application) {
@@ -45,9 +43,8 @@ public class RecipeViewModel extends AndroidViewModel {
         }
 
         List<RecipeStore> results = mRecipeLiveData.getValue();
-        if (results == null || results.size() == 0) {
-            Log.d(TAG, "Fetching initial results from network");
-            dm.fetchRecipes();
+        if (mNetworkError || results == null || results.size() == 0) {
+            fetchFromNetwork(dm);
             return;
         }
 
@@ -55,8 +52,8 @@ public class RecipeViewModel extends AndroidViewModel {
         for (RecipeStore result : results) {
             final OffsetDateTime resultLastSync = result.getLastSync();
             if (resultLastSync.isBefore(threshold)) {
-                Log.d(TAG, "Refreshing data from network. result.lastSync: " + resultLastSync);
-                dm.fetchRecipes();
+                Log.d(TAG, "result.lastSync: " + resultLastSync);
+                fetchFromNetwork(dm);
                 return;
             } else if (oldestLastSync == null || resultLastSync.isBefore(oldestLastSync)) {
                 oldestLastSync = resultLastSync;
@@ -66,22 +63,26 @@ public class RecipeViewModel extends AndroidViewModel {
         Log.d(TAG, "All cached recipes up to date - no network request performed");
     }
 
-    public void recipeRequestSuccess() {
-        mLastInMemorySync = OffsetDateTime.now();
+    private void fetchFromNetwork(DataManager dm) {
+        Log.d(TAG, "Fetching results from network");
+        mNetworkError = false;
+        dm.fetchRecipes();
     }
 
-    public void recipeRequestError() {
+    public void recipeRequestSuccess() {
+        mLastInMemorySync = OffsetDateTime.now();
+        mNetworkError = false;
+    }
+
+    public boolean checkCachedDataOnNetworkError() {
         mLastInMemorySync = null;
-        if (mRecipeLiveData.getValue().size() == 0) {
-            RecipeStore placeholder = new RecipeStore(0, "No Recipes!", 0, "http://www.magicalsurprise.com/themes/custom/2975/assets/Surprise.jpeg", OffsetDateTime.now());
-            IngredientStore placeholderIngredient = new IngredientStore(1, 1.5, "Tonnes", "Stardust", 0);
-            StepStore placeholderStep = new StepStore(1, 1, "TODO", "Really TODO", "", "", 0);
-            DiskIOExecutor.execute(() -> {
-                // TODO - single transaction?
-                mDb.recipeDao().updateRecipe(placeholder);
-                mDb.ingredientDao().updateIngredients(placeholderIngredient);
-                mDb.stepDao().updateSteps(placeholderStep);
-            });
+        mNetworkError = true;
+        return mRecipeLiveData.getValue().size() > 0;
+    }
+
+    public void retryFromNetworkIfNeeded(DataManager dataManager) {
+        if (mNetworkError) {
+            fetchFromNetworkIfNeeded(dataManager);
         }
     }
 }

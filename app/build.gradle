@@ -82,4 +82,8 @@ dependencies {
     // lifecycle + livedata
     implementation 'android.arch.lifecycle:extensions:' + archComponentsVersion
     annotationProcessor 'android.arch.lifecycle:compiler:' + archComponentsVersion
+
+    // video playback
+    implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
+
 }
