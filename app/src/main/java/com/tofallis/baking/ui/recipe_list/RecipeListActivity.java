@@ -67,7 +67,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
     }
 
     private void setRecyclerViewLayoutManager(Configuration newConfig) {
-        if (newConfig.screenWidthDp <= 640) {
+        if (newConfig.screenWidthDp < 600) {
             Log.d(TAG, "setRecyclerViewLayoutManager:: Phone");
             mRecipes.setLayoutManager(new GridLayoutManager(this, 1));
         } else {

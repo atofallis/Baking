@@ -35,7 +35,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.android.AndroidInjection;
 
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_ID;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_STEP_POS;
@@ -65,7 +64,6 @@ public class RecipeStepActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, "onCreate");
