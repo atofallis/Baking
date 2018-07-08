@@ -1,6 +1,7 @@
 package com.tofallis.baking.ui.recipe_detail;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,19 +24,20 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_ID;
+
 public class RecipeDetailFragment extends Fragment {
 
-    private static final String BUNDLE_RECIPE_ID = "bundle_recipe_id";
-
-    private int mRecipeId;
+    @BindView(R.id.rvIngredients)
+    RecyclerView mIngredients;
+    IngredientAdapter mIngredientAdapter;
 
     @BindView(R.id.rvSteps)
     RecyclerView mSteps;
     RecipeDetailAdapter mRecipeDetailAdapter;
 
-    @BindView(R.id.rvIngredients)
-    RecyclerView mIngredients;
-    IngredientAdapter mIngredientAdapter;
+    private int mRecipeId;
+    OnStepClickListener mClickListener;
 
     @VisibleForTesting // flag any direct production usage as unexpected
     public RecipeDetailFragment() {
@@ -44,7 +46,7 @@ public class RecipeDetailFragment extends Fragment {
     public static RecipeDetailFragment newInstance(int recipeId) {
         RecipeDetailFragment fragment = new RecipeDetailFragment();
         Bundle args = new Bundle();
-        args.putInt(BUNDLE_RECIPE_ID, recipeId);
+        args.putInt(EXTRA_RECIPE_ID, recipeId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,7 +59,17 @@ public class RecipeDetailFragment extends Fragment {
         if (args == null) {
             throw new InstantiationError();
         }
-        mRecipeId = Objects.requireNonNull(args.getInt(BUNDLE_RECIPE_ID));
+        mRecipeId = Objects.requireNonNull(args.getInt(EXTRA_RECIPE_ID));
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            mClickListener = (OnStepClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnStepClickListener");
+        }
     }
 
     @Nullable
@@ -67,10 +79,10 @@ public class RecipeDetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         if (savedInstanceState != null) {
-            mRecipeId = Objects.requireNonNull(savedInstanceState.getInt(BUNDLE_RECIPE_ID));
+            mRecipeId = Objects.requireNonNull(savedInstanceState.getInt(EXTRA_RECIPE_ID));
         }
 
-        mRecipeDetailAdapter = new RecipeDetailAdapter(getContext());
+        mRecipeDetailAdapter = new RecipeDetailAdapter(mClickListener);
         mSteps.setAdapter(mRecipeDetailAdapter);
         mSteps.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
@@ -96,6 +108,10 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(BUNDLE_RECIPE_ID, mRecipeId);
+        outState.putInt(EXTRA_RECIPE_ID, mRecipeId);
+    }
+
+    public interface OnStepClickListener {
+        void onRecipeStepClicked(int position);
     }
 }

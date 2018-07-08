@@ -17,13 +17,8 @@ import java.util.List;
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.ViewHolder> {
 
     private static final String TAG = IngredientAdapter.class.getSimpleName();
-    private Context mContext;
     // store list of Recipes from the api query.
     private List<IngredientStore> mIngredientStoreList = new ArrayList<>();
-
-    private List<IngredientStore> getIngredientStoreList() {
-        return mIngredientStoreList;
-    }
 
     public void setIngredientStoreList(List<IngredientStore> ingredientStoreList) {
         mIngredientStoreList = ingredientStoreList;
@@ -47,10 +42,6 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     public void onBindViewHolder(@NonNull IngredientAdapter.ViewHolder holder, final int position) {
 
         final IngredientStore ingredient = mIngredientStoreList.get(position);
-//        if (position == 0) {
-//            holder.mHeader.setVisibility(View.VISIBLE);
-//        }
-
         holder.mQuantity.setText(holder.mQuantity.getContext().getString(
                 R.string.appwidget_quantity_text,
                 ingredient.getQuantity(),
@@ -63,19 +54,12 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         return mIngredientStoreList.size();
     }
 
-    /**
-     * Creates a new ImageView for each item referenced by the adapter
-     */
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-//        ViewGroup mHeader;
         TextView mIngredient;
         TextView mQuantity;
 
         ViewHolder(View itemView) {
             super(itemView);
-//            mHeader = itemView.findViewById(R.id.header);
             mIngredient = itemView.findViewById(R.id.ingredient);
             mQuantity = itemView.findViewById(R.id.quantity);
         }

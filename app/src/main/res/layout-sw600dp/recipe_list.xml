@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/recipe_detail_fragment"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"></FrameLayout>
+        android:layout_height="wrap_content"/>
 
     <!-- Divider -->
     <View
@@ -20,6 +20,6 @@
     <!-- RecipeDetailActivity on phone, RHS pane for this layout -->
     <FrameLayout
         android:id="@+id/recipe_step_fragment"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>
