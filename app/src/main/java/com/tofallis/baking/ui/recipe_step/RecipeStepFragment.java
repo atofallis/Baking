@@ -166,6 +166,9 @@ public class RecipeStepFragment extends Fragment {
     }
 
     private void updateFields(List<StepStore> stepStoreList) {
+        if (stepStoreList == null || stepStoreList.size() == 0) {
+            return;
+        }
         final String desc = stepStoreList.get(mStepPosition).getDescription();
         Log.d(TAG, "Desc: " + desc);
         mStepDescription.setText(desc);
