@@ -3,17 +3,5 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
-
-    <FrameLayout
-        android:id="@+id/recipe_ingredients_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </FrameLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvSteps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="0dp"
-        android:scrollbars="vertical"/>
+    <include layout="@layout/recipe_detail_step_list"/>
 </LinearLayout>

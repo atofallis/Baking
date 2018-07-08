@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:baselineAligned="false">
+              android:baselineAligned="false"
+              android:orientation="horizontal">
 
+    <!-- This is the main layout on phone for RecipeListActivity - LHS pane for this layout -->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="wrap_content"
+                  android:layout_width="200dp"
                   android:layout_height="match_parent"
                   android:orientation="vertical">
-        <FrameLayout
-            android:id="@+id/recipe_ingredients_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </FrameLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvSteps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="0dp"
-            android:scrollbars="vertical"/>
+        <include layout="@layout/recipe_detail_step_list"/>
     </LinearLayout>
+
     <!-- Divider -->
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray" />
+        android:background="@android:color/darker_gray"/>
 
+    <!-- RecipeDetailActivity on phone, RHS pane for this layout -->
     <include layout="@layout/recipe_step_layout"/>
 </LinearLayout>
