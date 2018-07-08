@@ -31,7 +31,7 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
         mSteps = steps;
     }
 
-    public RecipeDetailAdapter(Context context) {
+    RecipeDetailAdapter(Context context) {
         mContext = context;
     }
 
@@ -66,7 +66,7 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
      * Creates a new ImageView for each item referenced by the adapter
      */
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView mStepShortDescription;
 

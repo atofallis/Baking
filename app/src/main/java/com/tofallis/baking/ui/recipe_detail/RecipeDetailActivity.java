@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.tofallis.baking.R;
@@ -18,7 +19,6 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_ID;
-import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_NAME;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
@@ -26,8 +26,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.rvSteps)
     RecyclerView mSteps;
-
     RecipeDetailAdapter mRecipeDetailAdapter;
+
+    @BindView(R.id.rvIngredients)
+    RecyclerView mIngredients;
+    IngredientAdapter mIngredientAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +44,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
         mSteps.setAdapter(mRecipeDetailAdapter);
         mSteps.setLayoutManager(new GridLayoutManager(this, 1));
 
+        mIngredientAdapter = new IngredientAdapter();
+        mIngredients.setAdapter(mIngredientAdapter);
+        mIngredients.setLayoutManager(new LinearLayoutManager(this));
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_RECIPE_ID)) {
             // populate the UI
@@ -52,13 +59,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
             });
             final RecipeIdViewModel ingredients = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
             ingredients.getIngredientLiveData().observe(this, ingredientStoreList -> {
-                IngredientsFragment fragment = IngredientsFragment.newInstance(
-                        ingredientStoreList,
-                        intent.getStringExtra(EXTRA_RECIPE_NAME));
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.recipe_ingredients_list, fragment)
-                        .commit();
+                mIngredientAdapter.setIngredientStoreList(ingredientStoreList);
+                mIngredientAdapter.notifyDataSetChanged();
             });
         }
     }
