@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.tofallis.baking.R;
@@ -34,7 +33,8 @@ public class IngredientsFragment extends Fragment {
     private List<IngredientStore> mIngredientStoreList = new ArrayList<>();
 
     @VisibleForTesting // flag any direct production usage as unexpected
-    public IngredientsFragment() {}
+    public IngredientsFragment() {
+    }
 
     public static IngredientsFragment newInstance(List<IngredientStore> ingredientStores, String recipeName) {
         IngredientsFragment fragment = new IngredientsFragment();
@@ -73,7 +73,7 @@ public class IngredientsFragment extends Fragment {
         recipeName.setText(mRecipeName);
 
         // TODO - make sure we display all the ingredients!!
-        for (int i=0; i < mIngredientStoreList.size() && i < MAX_INGREDIENTS_TO_DISPLAY; i++) {
+        for (int i = 0; i < mIngredientStoreList.size() && i < MAX_INGREDIENTS_TO_DISPLAY; i++) {
             final IngredientStore ingredient = mIngredientStoreList.get(i);
             View rowParent = rootView.findViewById(getIngredientRowResourceIdFromIndex(i));
             TextView ingredientText = rowParent.findViewById(R.id.ingredient);
