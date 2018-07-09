@@ -70,14 +70,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         }
 
         String url = r.getImage();
-        final @DrawableRes int placeholder = R.drawable.ic_launcher_background;
+        final @DrawableRes int placeholder = R.drawable.cheesecake;
         if (url == null || url.isEmpty()) {
             holder.mBackgroundImage.setImageResource(placeholder);
         } else {
             Picasso.with(mContext)
                     .load(url)
-                    .placeholder(placeholder) // TODO - better placeholders
-                    .error(R.drawable.example_appwidget_preview)
+                    .placeholder(placeholder)
+                    .error(R.drawable.error)
+                    .fit()
                     .into(holder.mBackgroundImage);
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import com.tofallis.baking.R;
 import com.tofallis.baking.data.AppDatabase;
 import com.tofallis.baking.data.StepStore;
@@ -51,8 +54,14 @@ public class RecipeStepFragment extends Fragment {
     @BindView(R.id.videoView)
     SimpleExoPlayerView mPlayerView;
 
+    @BindView(R.id.stepDetails)
+    ViewGroup mStepDetails;
+
     @BindView(R.id.stepDescription)
     TextView mStepDescription;
+
+    @BindView(R.id.stepThumbnail)
+    ImageView mStepThumbnail;
 
     @BindView(R.id.prevNextButtons)
     ViewGroup mButtonGroup;
@@ -179,6 +188,19 @@ public class RecipeStepFragment extends Fragment {
         } else {
             mPlayerView.setVisibility(View.GONE);
         }
+        final String thumbnailUrl = stepStoreList.get(mStepPosition).getThumbnailUrl();
+        final @DrawableRes int placeholder = R.drawable.chef;
+        if (thumbnailUrl == null || thumbnailUrl.isEmpty()) {
+            mStepThumbnail.setImageResource(placeholder);
+        } else {
+            Picasso.with(getContext())
+                    .load(thumbnailUrl)
+                    .placeholder(placeholder)
+                    .error(R.drawable.error)
+                    .fit()
+                    .into(mStepThumbnail);
+        }
+
         if (mStepPosition > 0) {
             Log.d(TAG, "Prev enabled");
             mPreviousStepButton.setEnabled(true);
@@ -222,14 +244,14 @@ public class RecipeStepFragment extends Fragment {
     private void toggleFullsizeVideo() {
         if (mPhone) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                mStepDescription.setVisibility(View.GONE);
+                mStepDetails.setVisibility(View.GONE);
                 mButtonGroup.setVisibility(View.GONE);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPlayerView.getLayoutParams();
                 params.width = MATCH_PARENT;
                 params.height = MATCH_PARENT;
                 mPlayerView.setLayoutParams(params);
             } else {
-                mStepDescription.setVisibility(View.VISIBLE);
+                mStepDetails.setVisibility(View.VISIBLE);
                 mButtonGroup.setVisibility(View.VISIBLE);
             }
         }
