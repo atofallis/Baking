@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -46,6 +47,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_ID;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_STEP_ACTIVITY;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_STEP_POS;
+import static com.tofallis.baking.ui.RecipeConstants.EXTRA_STEP_VIDEO_KEY_POSITION;
+import static com.tofallis.baking.ui.RecipeConstants.EXTRA_STEP_VIDEO_KEY_WINDOW;
 
 public class RecipeStepFragment extends Fragment {
 
@@ -76,7 +79,11 @@ public class RecipeStepFragment extends Fragment {
     private int mRecipeId;
     private ExoPlayer mExoPlayer;
 
+    private int mStartWindow;
+    private long mStartPosition;
+
     private boolean mPhone;
+    private RecipeIdViewModel mStepsViewModel;
 
     @VisibleForTesting // flag any direct production usage as unexpected
     public RecipeStepFragment() {
@@ -130,29 +137,49 @@ public class RecipeStepFragment extends Fragment {
         }
 
         RecipeViewModelFactory factory = new RecipeViewModelFactory(AppDatabase.getDatabase(getContext().getApplicationContext()), mRecipeId);
-        final RecipeIdViewModel stepsViewModel = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
+        mStepsViewModel = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
+        mStepsViewModel.getStepLiveData().observe(this, this::updateFields);
+        return rootView;
+    }
 
-        final List<StepStore> currentStepStoreList = stepsViewModel.getStepLiveData().getValue();
+    private void updateViewsIfNeeded() {
+        final List<StepStore> currentStepStoreList = mStepsViewModel.getStepLiveData().getValue();
         if (currentStepStoreList != null && currentStepStoreList.size() > 0) {
             updateFields(currentStepStoreList);
         }
-        stepsViewModel.getStepLiveData().observe(this, this::updateFields);
-        return rootView;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mExoPlayer != null) {
-            mExoPlayer.stop();
-        }
+        releasePlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mExoPlayer != null) {
-            mExoPlayer.setPlayWhenReady(true);
+        updateViewsIfNeeded();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        updatePlaybackPosition();
+        Log.d(TAG, "onSaveInstanceState");
+        outState.putInt(EXTRA_STEP_VIDEO_KEY_WINDOW, mStartWindow);
+        outState.putLong(EXTRA_STEP_VIDEO_KEY_POSITION, mStartPosition);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mStartWindow = savedInstanceState.getInt(EXTRA_STEP_VIDEO_KEY_WINDOW);
+            mStartPosition = savedInstanceState.getLong(EXTRA_STEP_VIDEO_KEY_POSITION);
+            Log.d(TAG, "onActivityCreated :: mStartPos:" + mStartPosition + " mStartWindow: " + mStartWindow);
+        } else {
+            Log.d(TAG, "onActivityCreated :: saved state is null!");
+            clearStartPosition();
         }
     }
 
@@ -165,9 +192,7 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (mExoPlayer != null) {
-            mExoPlayer.stop();
-        }
+        releasePlayer();
     }
 
     public static void clickNextActivity(Context context, int recipeId, int nextStepPos) {
@@ -228,13 +253,32 @@ public class RecipeStepFragment extends Fragment {
                     new DefaultExtractorsFactory(),
                     null,
                     null);
-            mExoPlayer.prepare(mediaSource);
+
+            final boolean haveStartPosition = mStartWindow != C.INDEX_UNSET;
+            if (haveStartPosition) {
+                mExoPlayer.seekTo(mStartWindow, mStartPosition);
+            }
+            Log.d(TAG, "haveStartPos: " + haveStartPosition);
+            mExoPlayer.prepare(mediaSource, !haveStartPosition, false);
             mExoPlayer.setPlayWhenReady(true);
         }
     }
 
+    private void updatePlaybackPosition() {
+        if (mExoPlayer != null) {
+            mStartWindow = mExoPlayer.getCurrentWindowIndex();
+            mStartPosition = Math.max(0, mExoPlayer.getContentPosition());
+        }
+    }
+
+    private void clearStartPosition() {
+        mStartWindow = C.INDEX_UNSET;
+        mStartPosition = C.TIME_UNSET;
+    }
+
     private void releasePlayer() {
         if (mExoPlayer != null) {
+            updatePlaybackPosition();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;

@@ -48,10 +48,16 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
                     .commit();
 
             if (mTwoPane) {
-                RecipeStepFragment stepFragment = RecipeStepFragment.newTabletInstance(mRecipeId, stepPos);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.recipe_step_fragment, stepFragment)
-                        .commit();
+                // Prevent fragment from being unnecessarily replaced on rotation, allowing us to
+                // properly retain video playback position
+                if (savedInstanceState == null) {
+                    RecipeStepFragment stepFragment = RecipeStepFragment.newTabletInstance(mRecipeId, stepPos);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.recipe_step_fragment, stepFragment, RecipeStepFragment.class.getSimpleName())
+                            .commit();
+                } else {
+                    getSupportFragmentManager().findFragmentByTag(RecipeStepFragment.class.getSimpleName());
+                }
             }
         }
     }

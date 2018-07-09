@@ -33,12 +33,18 @@ public class RecipeStepActivity extends AppCompatActivity {
             if (actionBar != null && actionBar.isShowing() && intent.hasExtra(EXTRA_RECIPE_NAME)) {
                 actionBar.setTitle(intent.getStringExtra(EXTRA_RECIPE_NAME));
             }
-            RecipeStepFragment stepFragment = RecipeStepFragment.newPhoneInstance(
-                    intent.getIntExtra(EXTRA_RECIPE_ID, -1),
-                    intent.getIntExtra(EXTRA_STEP_POS, -1));
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.recipe_step_fragment, stepFragment)
-                    .commit();
+            // Prevent fragment from being unnecessarily replaced on rotation, allowing us to
+            // properly retain video playback position
+            if (savedInstanceState == null) {
+                RecipeStepFragment stepFragment = RecipeStepFragment.newPhoneInstance(
+                        intent.getIntExtra(EXTRA_RECIPE_ID, -1),
+                        intent.getIntExtra(EXTRA_STEP_POS, -1));
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.recipe_step_fragment, stepFragment, RecipeStepFragment.class.getSimpleName())
+                        .commit();
+            } else {
+                getSupportFragmentManager().findFragmentByTag(RecipeStepFragment.class.getSimpleName());
+            }
         }
     }
 
