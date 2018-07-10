@@ -92,7 +92,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
      * Creates a new ImageView for each item referenced by the adapter
      */
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView mBackgroundImage;
         TextView mRecipeTitle;
@@ -116,18 +116,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 intent.putExtra(RecipeConstants.EXTRA_RECIPE_NAME, r.getName());
                 mContext.startActivity(intent);
             }
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                RecipeStore r = getRecipes().get(position);
-                Intent intent = new Intent(mContext, RecipeDetailActivity.class);
-                // TODO... intent.putExtra(Recipe.ID, r.getId());
-                mContext.startActivity(intent);
-            }
-            return true;
         }
     }
 }

@@ -39,6 +39,8 @@ public class RecipeDetailFragment extends Fragment {
     private int mRecipeId;
     OnStepClickListener mClickListener;
 
+    private RecipeIdViewModel mRecipeViewModel;
+
     @VisibleForTesting // flag any direct production usage as unexpected
     public RecipeDetailFragment() {
     }
@@ -65,7 +67,7 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try{
+        try {
             mClickListener = (OnStepClickListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnStepClickListener");
@@ -91,18 +93,33 @@ public class RecipeDetailFragment extends Fragment {
         mIngredients.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // populate the UI
+        setupViewModel();
+        return rootView;
+    }
+
+    // Util to refresh views on RecipeStepActivity -> RecipeDetailActivity 'up' navigation on Phone
+    public void refreshViews() {
+        if (mRecipeViewModel == null) {
+            setupViewModel();
+        } else {
+            mRecipeDetailAdapter.setSteps(mRecipeViewModel.getStepLiveData().getValue());
+            mRecipeDetailAdapter.notifyDataSetChanged();
+            mIngredientAdapter.setIngredientStoreList(mRecipeViewModel.getIngredientLiveData().getValue());
+            mIngredientAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void setupViewModel() {
         RecipeViewModelFactory factory = new RecipeViewModelFactory(AppDatabase.getDatabase(getContext().getApplicationContext()), mRecipeId);
-        final RecipeIdViewModel recipe = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
-        recipe.getStepLiveData().observe(this, stepStoreList -> {
+        mRecipeViewModel = ViewModelProviders.of(this, factory).get(RecipeIdViewModel.class);
+        mRecipeViewModel.getStepLiveData().observe(this, stepStoreList -> {
             mRecipeDetailAdapter.setSteps(stepStoreList);
             mRecipeDetailAdapter.notifyDataSetChanged();
         });
-        recipe.getIngredientLiveData().observe(this, ingredientStoreList -> {
+        mRecipeViewModel.getIngredientLiveData().observe(this, ingredientStoreList -> {
             mIngredientAdapter.setIngredientStoreList(ingredientStoreList);
             mIngredientAdapter.notifyDataSetChanged();
         });
-
-        return rootView;
     }
 
     @Override

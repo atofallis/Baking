@@ -22,7 +22,8 @@
 
         <activity android:name=".ui.recipe_detail.RecipeDetailActivity"/>
 
-        <activity android:name=".ui.recipe_step.RecipeStepActivity"/>
+        <activity android:name=".ui.recipe_step.RecipeStepActivity"
+                  android:parentActivityName=".ui.recipe_detail.RecipeDetailActivity"/>
 
         <receiver android:name=".ui.RecipeIngredientsWidget">
             <intent-filter>

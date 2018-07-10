@@ -1,7 +1,6 @@
 package com.tofallis.baking.ui.recipe_step;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +44,7 @@ import butterknife.ButterKnife;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_ID;
+import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_NAME;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_RECIPE_STEP_ACTIVITY;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_STEP_POS;
 import static com.tofallis.baking.ui.RecipeConstants.EXTRA_STEP_VIDEO_KEY_POSITION;
@@ -77,6 +77,8 @@ public class RecipeStepFragment extends Fragment {
 
     private int mStepPosition;
     private int mRecipeId;
+    private String mRecipeName;
+
     private ExoPlayer mExoPlayer;
 
     private int mStartWindow;
@@ -89,24 +91,25 @@ public class RecipeStepFragment extends Fragment {
     public RecipeStepFragment() {
     }
 
-    public static RecipeStepFragment newTabletInstance(int recipeId, int stepPosition) {
+    public static RecipeStepFragment newTabletInstance(int recipeId, String recipeName, int stepPosition) {
         RecipeStepFragment fragment = new RecipeStepFragment();
-        fragment.setArguments(setupBaseFragmentBundle(recipeId, stepPosition));
+        fragment.setArguments(setupBaseFragmentBundle(recipeId, recipeName, stepPosition));
         return fragment;
     }
 
-    public static RecipeStepFragment newPhoneInstance(int recipeId, int stepPosition) {
+    public static RecipeStepFragment newPhoneInstance(int recipeId, String recipeName, int stepPosition) {
         RecipeStepFragment fragment = new RecipeStepFragment();
-        Bundle args = setupBaseFragmentBundle(recipeId, stepPosition);
+        Bundle args = setupBaseFragmentBundle(recipeId, recipeName, stepPosition);
         args.putBoolean(EXTRA_RECIPE_STEP_ACTIVITY, true);
         fragment.setArguments(args);
         return fragment;
     }
 
-    private static Bundle setupBaseFragmentBundle(int recipeId, int stepPosition) {
+    private static Bundle setupBaseFragmentBundle(int recipeId, String recipeName, int stepPosition) {
         Bundle args = new Bundle();
         args.putInt(EXTRA_RECIPE_ID, recipeId);
         args.putInt(EXTRA_STEP_POS, stepPosition);
+        args.putString(EXTRA_RECIPE_NAME, recipeName);
         return args;
     }
 
@@ -120,6 +123,7 @@ public class RecipeStepFragment extends Fragment {
         }
         mRecipeId = Objects.requireNonNull(args.getInt(EXTRA_RECIPE_ID));
         mStepPosition = Objects.requireNonNull(args.getInt(EXTRA_STEP_POS));
+        mRecipeName = Objects.requireNonNull(args.getString(EXTRA_RECIPE_NAME));
         mPhone = args.getBoolean(EXTRA_RECIPE_STEP_ACTIVITY);
     }
 
@@ -195,8 +199,8 @@ public class RecipeStepFragment extends Fragment {
         releasePlayer();
     }
 
-    public static void clickNextActivity(Context context, int recipeId, int nextStepPos) {
-        RecipeStepActivity.startStepActivity(context, recipeId, nextStepPos);
+    public void clickNextActivity(int nextStepPos) {
+        RecipeStepActivity.startStepActivity(getContext(), mRecipeId, mRecipeName, nextStepPos);
     }
 
     private void updateFields(List<StepStore> stepStoreList) {
@@ -229,14 +233,14 @@ public class RecipeStepFragment extends Fragment {
         if (mStepPosition > 0) {
             Log.d(TAG, "Prev enabled");
             mPreviousStepButton.setEnabled(true);
-            mPreviousStepButton.setOnClickListener(v -> clickNextActivity(getContext(), mRecipeId, mStepPosition - 1));
+            mPreviousStepButton.setOnClickListener(v -> clickNextActivity(mStepPosition - 1));
         } else {
             mPreviousStepButton.setEnabled(false);
         }
         if (mStepPosition < (stepStoreList.size() - 1)) {
             Log.d(TAG, "Next enabled");
             mNextStepButton.setEnabled(true);
-            mNextStepButton.setOnClickListener(v -> clickNextActivity(getContext(), mRecipeId, mStepPosition + 1));
+            mNextStepButton.setOnClickListener(v -> clickNextActivity(mStepPosition + 1));
         } else {
             mNextStepButton.setEnabled(false);
         }
