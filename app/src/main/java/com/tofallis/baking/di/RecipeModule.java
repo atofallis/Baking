@@ -12,6 +12,8 @@ import com.tofallis.baking.data.RecipeRepo;
 import com.tofallis.baking.data.StepDao;
 import com.tofallis.baking.network.DataManager;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -36,7 +38,7 @@ class RecipeModule {
     }
 
     @Provides
-    Interceptor provideBasicInterceptor(Application app) {
+    Interceptor provideBasicInterceptor() {
         return chain -> {
             HttpUrl url = chain.request().url().newBuilder()
                     .build();
@@ -52,6 +54,8 @@ class RecipeModule {
         return new OkHttpClient.Builder()
                 .addInterceptor(requestInterceptor)
                 .addInterceptor(logging)
+                .readTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
                 .build();
     }
 

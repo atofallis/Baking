@@ -55,7 +55,9 @@ class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDestroy() {
-        mCursor.close();
+        if (mCursor != null) {
+            mCursor.close();
+        }
     }
 
     @Override
@@ -87,14 +89,16 @@ class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         RemoteViews ingredientRow = new RemoteViews(mContext.getPackageName(), R.layout.ingredient_row_layout);
 
+        ingredientRow.setTextViewText(R.id.recipe_number, Integer.toString(recipeId));
         ingredientRow.setTextViewText(R.id.ingredient, ingredient);
         ingredientRow.setTextViewText(R.id.quantity, mContext.getString(
                 R.string.appwidget_quantity_text, quantity, measure));
 
-        // Fill in the onClick PendingIntent Template using the specific plant Id for each item individually
+        // Fill in the onClick PendingIntent Template using the specific recipeId
         Bundle extras = new Bundle();
-        extras.putLong(EXTRA_RECIPE_ID, recipeId);
-        extras.putString(RecipeConstants.EXTRA_RECIPE_NAME, "Recipe #" + recipeId);
+        extras.putInt(EXTRA_RECIPE_ID, recipeId);
+        final String recipeWidgetTitle = "Recipe #" + recipeId;
+        extras.putString(RecipeConstants.EXTRA_RECIPE_NAME, recipeWidgetTitle);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtras(extras);
         ingredientRow.setOnClickFillInIntent(R.id.ingredient_widget_row, fillInIntent);

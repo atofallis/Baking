@@ -30,6 +30,8 @@ public class RecipeIngredientWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, RecipeIngredientService.class);
         views.setRemoteAdapter(R.id.widgetListView, intent);
 
+        views.setTextViewText(R.id.widget_title, "Recipe Ingredients");
+
         // template to handle the click listener for each item
         Intent clickIntentTemplate = new Intent(context, RecipeDetailActivity.class);
         PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
@@ -69,7 +71,7 @@ public class RecipeIngredientWidget extends AppWidgetProvider {
     @Override
     public void onReceive(final Context context, Intent intent) {
         final String action = intent.getAction();
-        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
+        if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(action)) {
             // refresh all your widgets
             AppWidgetManager mgr = AppWidgetManager.getInstance(context);
             ComponentName cn = new ComponentName(context, RecipeIngredientWidget.class);

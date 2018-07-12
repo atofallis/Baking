@@ -77,7 +77,7 @@ public class RecipeViewModel extends AndroidViewModel {
     public boolean checkCachedDataOnNetworkError() {
         mLastInMemorySync = null;
         mNetworkError = true;
-        return mRecipeLiveData.getValue().size() > 0;
+        return mRecipeLiveData.getValue().size() == 0;
     }
 
     public void retryFromNetworkIfNeeded(DataManager dataManager) {

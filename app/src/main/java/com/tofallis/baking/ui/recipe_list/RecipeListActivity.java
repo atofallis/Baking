@@ -81,8 +81,10 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
         mRecipeViewModel.fetchFromNetworkIfNeeded(mDataManager);
         mAdapter.setRecipes(recipes);
         mAdapter.notifyDataSetChanged();
-        // Update app widgets
-        RecipeIngredientWidget.sendRefreshBroadcast(this);
+        if (recipes != null && recipes.size() > 0) {
+            // Update app widgets
+            RecipeIngredientWidget.sendRefreshBroadcast(this);
+        }
     }
 
     @Override
@@ -95,6 +97,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
         Log.d(TAG, "Network Error: " + error.getMessage());
         if (mRecipeViewModel.checkCachedDataOnNetworkError()) {
             Toast.makeText(this, R.string.toast_no_recipes, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }
