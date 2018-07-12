@@ -8,8 +8,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
+import static com.tofallis.baking.provider.RecipeIngredientContract.IngredientEntry.TABLE_NAME;
 
-@Entity(tableName = "ingredient", foreignKeys = {
+@Entity(tableName = TABLE_NAME, foreignKeys = {
         @ForeignKey(entity = RecipeStore.class,
                 parentColumns = "id",
                 childColumns = "recipeId",

@@ -14,6 +14,7 @@ import com.tofallis.baking.R;
 import com.tofallis.baking.data.RecipeStore;
 import com.tofallis.baking.network.DataManager;
 import com.tofallis.baking.network.RecipeListener;
+import com.tofallis.baking.widget.RecipeIngredientWidget;
 
 import java.util.List;
 
@@ -80,6 +81,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListe
         mRecipeViewModel.fetchFromNetworkIfNeeded(mDataManager);
         mAdapter.setRecipes(recipes);
         mAdapter.notifyDataSetChanged();
+        // Update app widgets
+        RecipeIngredientWidget.sendRefreshBroadcast(this);
     }
 
     @Override

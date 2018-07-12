@@ -11,4 +11,5 @@
     <string name="button_next_step">Next</string>
     <string name="step_description_placeholder">2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.</string>
     <string name="toast_no_recipes">No recipes!</string>
+    <string name="empty_view_text">No recipes!</string>
 </resources>
