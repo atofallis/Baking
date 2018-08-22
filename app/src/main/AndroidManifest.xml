@@ -22,16 +22,18 @@
 
         <activity android:name=".ui.recipe_detail.RecipeDetailActivity"/>
 
-        <activity android:name=".ui.recipe_step.RecipeStepActivity"
-                  android:parentActivityName=".ui.recipe_detail.RecipeDetailActivity"/>
+        <activity
+            android:name=".ui.recipe_step.RecipeStepActivity"
+            android:parentActivityName=".ui.recipe_detail.RecipeDetailActivity"/>
 
-        <service android:name=".widget.RecipeIngredientService"
-                 android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".widget.RecipeIngredientService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <provider
             android:name=".provider.RecipeIngredientContentProvider"
             android:authorities="com.tofallis.baking"
-            android:exported="true" />
+            android:exported="false"/>
 
         <receiver android:name=".widget.RecipeIngredientWidget">
             <intent-filter>

@@ -40,17 +40,41 @@ class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        // Query the list of all recipes
-        Uri contentQuery = BASE_CONTENT_URI.buildUpon().appendPath(PATH_RECIPES).build();
-        if (mCursor != null) {
-            mCursor.close();
+        /* Work-around for the widget permissions maintaining exported=false in our manifest.
+        A new thread is owned by our application process, and doesn't care that this code
+        was triggered by the Android launcher.
+        https://stackoverflow.com/questions/13187284/android-permission-denial-in-widget-remoteviewsfactory-for-content
+        Another option:
+            final long token = Binder.clearCallingIdentity();
+            try {
+                [perform your query, etc]
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+        */
+
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                // Query the list of all recipes
+                Uri contentQuery = BASE_CONTENT_URI.buildUpon().appendPath(PATH_RECIPES).build();
+                if (mCursor != null) {
+                    mCursor.close();
+                }
+                mCursor = mContext.getContentResolver().query(
+                        contentQuery,
+                        null,
+                        null,
+                        null,
+                        null);
+            }
+        };
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        mCursor = mContext.getContentResolver().query(
-                contentQuery,
-                null,
-                null,
-                null,
-                null);
     }
 
     @Override

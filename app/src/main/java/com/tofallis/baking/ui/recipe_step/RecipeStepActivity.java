@@ -44,7 +44,8 @@ public class RecipeStepActivity extends AppCompatActivity {
             }
             // Prevent fragment from being unnecessarily replaced on rotation, allowing us to
             // properly retain video playback position
-            if (savedInstanceState == null) {
+            if (getSupportFragmentManager().findFragmentByTag(RecipeStepFragment.class.getSimpleName()) == null) {
+                Log.d(TAG, "Instantiating new RecipeStepFragment");
                 RecipeStepFragment stepFragment = RecipeStepFragment.newPhoneInstance(
                         mRecipeId,
                         mRecipeName,
@@ -52,8 +53,6 @@ public class RecipeStepActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.recipe_step_fragment, stepFragment, RecipeStepFragment.class.getSimpleName())
                         .commit();
-            } else {
-                getSupportFragmentManager().findFragmentByTag(RecipeStepFragment.class.getSimpleName());
             }
         }
     }
